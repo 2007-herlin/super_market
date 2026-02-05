@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thiago Market | Cargando...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --verde: #88CF1E; }
+        body { 
+            background-color: #0d0d0d; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        /* Animación de entrada para el logo */
+        .logo-container {
+            text-align: center;
+            animation: fadeInScale 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Contenedor de la barra */
+        .loader-container {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* La línea que carga */
+        .loader-fill {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: var(--verde);
+            box-shadow: 0 0 15px var(--verde);
+            border-radius: 10px;
+            animation: progress 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            30% { width: 40%; }
+            60% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .text-loading {
+            margin-top: 15px;
+            color: #555;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <h1 class="text-white text-4xl font-black italic uppercase tracking-tighter">
+            THIAGO <span style="color: var(--verde);">MARKET</span>
+        </h1>
+        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-[5px] mt-1">Calidad Garantizada</p>
+    </div>
+
+    <div class="loader-container">
+        <div class="loader-fill"></div>
+    </div>
+
+    <p class="text-loading">la mejor bodega para comprar </p>
+
+    <script>
+        // Redirigir después de 3 segundos (tiempo de la animación + un extra)
+        setTimeout(() => {
+            // Animación de salida opcional antes de cambiar
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                window.location.href = 'producto.html';
+            }, 500);
+        }, 3000);
+    </script>
+
+</body>
+</html>

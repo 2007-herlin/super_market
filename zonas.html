@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zonas de Reparto | Thiago Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root { --verde: #88CF1E; }
+        body { background-color: #0d0d0d; color: white; font-family: sans-serif; margin: 0; }
+        .text-thiago { color: var(--verde); }
+        .bg-thiago { background-color: var(--verde); }
+        
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; }
+        
+        .nav-fixed {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #000; border-top: 1px solid #222;
+            z-index: 500; padding: 12px; display: flex; justify-content: space-around;
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #555; background: none; border: none; }
+        .nav-btn.active { color: var(--verde); }
+    </style>
+</head>
+<body class="pb-32">
+
+    <header class="p-6 border-b border-white/5 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-black italic uppercase">Delivery <span class="text-thiago">Thiago</span></h1>
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Cobertura y Tarifas</p>
+        </div>
+        <i class="ph ph-map-trifold text-thiago text-2xl"></i>
+    </header>
+
+    <main class="p-5 space-y-5">
+
+        <section class="text-center py-4">
+            <div class="inline-flex items-center gap-2 bg-thiago/10 px-4 py-2 rounded-full mb-3">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-thiago opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-thiago"></span>
+                </span>
+                <span class="text-[10px] font-black uppercase text-thiago">Reparto Activo Ahora</span>
+            </div>
+            <p class="text-xs text-gray-400">Llevamos tus productos favoritos hasta la puerta de tu casa en tiempo récord.</p>
+        </section>
+
+        <section class="space-y-3">
+            <h3 class="text-[9px] font-black text-gray-500 uppercase pl-1 tracking-widest">Nuestras Tarifas</h3>
+            
+            <div class="glass-card flex justify-between items-center border-l-4 border-thiago">
+                <div>
+                    <h4 class="text-sm font-bold uppercase italic text-white">Zona Centro</h4>
+                    <p class="text-[9px] text-gray-500">Cercado de Ica, Plaza de Armas</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-black text-thiago">S/ 3.00</span>
+                    <p class="text-[8px] text-gray-400 italic">15 - 25 min</p>
+                </div>
+            </div>
+
+            <div class="glass-card flex justify-between items-center">
+                <div>
+                    <h4 class="text-sm font-bold uppercase italic text-white">Zona Residencial</h4>
+                    <p class="text-[9px] text-gray-500">Urbanizaciones, La Palma, San Isidro</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-black text-white">S/ 5.00</span>
+                    <p class="text-[8px] text-gray-400 italic">25 - 40 min</p>
+                </div>
+            </div>
+
+            <div class="glass-card flex justify-between items-center">
+                <div>
+                    <h4 class="text-sm font-bold uppercase italic text-white">Zona Periférica</h4>
+                    <p class="text-[9px] text-gray-500">Subtanjalla, Parcona, Tinguiña</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-black text-white">S/ 8.00</span>
+                    <p class="text-[8px] text-gray-400 italic">40 - 60 min</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card overflow-hidden p-0 relative h-48">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute bottom-4 left-4 z-20">
+                <p class="text-[10px] font-black uppercase italic">Puntos de Cobertura</p>
+                <p class="text-[8px] text-thiago">Actualizado cada semana</p>
+            </div>
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15507.447475135117!2d-75.7333!3d-14.0678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9110e2eb0e5d996d%3A0x6a08465e9d91f86!2sIca!5e0!3m2!1ses!2spe!4v1700000000000" 
+                width="100%" height="100%" style="border:0; filter: grayscale(1) invert(1) contrast(1.2);" allowfullscreen="" loading="lazy">
+            </iframe>
+        </section>
+
+        <div class="bg-thiago p-4 rounded-xl flex items-center gap-4">
+            <div class="bg-black/20 p-2 rounded-lg">
+                <i class="ph-fill ph-gift text-white text-2xl"></i>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase text-black leading-tight">¡Delivery Gratis!</h4>
+                <p class="text-[9px] text-black/70 font-bold uppercase">Por compras mayores a S/ 60.00</p>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="nav-fixed">
+        <button onclick="window.location.href='producto.html'" class="nav-btn">
+            <i class="ph-fill ph-house text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='receta.html'" class="nav-btn">
+            <i class="ph-fill ph-cooking-pot text-2xl"></i>
+        </button>
+        <button onclick="location.reload()" class="nav-btn active">
+            <i class="ph-fill ph-map-pin text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='informacion.html'" class="nav-btn">
+            <i class="ph-fill ph-shield-checkered text-2xl"></i>
+        </button>
+    </nav>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Información | Thiago Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root { --verde: #88CF1E; }
+        body { background-color: #0d0d0d; color: white; font-family: sans-serif; margin: 0; }
+        .text-thiago { color: var(--verde); }
+        .bg-thiago { background-color: var(--verde); }
+        
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 20px; }
+        .badge { background: rgba(136, 207, 30, 0.1); color: var(--verde); font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 5px; text-transform: uppercase; }
+
+        .nav-fixed {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #000; border-top: 1px solid #222;
+            z-index: 500; padding: 12px; display: flex; justify-content: space-around;
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #555; background: none; border: none; }
+        .nav-btn.active { color: var(--verde); }
+    </style>
+</head>
+<body class="pb-32">
+
+    <header class="p-6 border-b border-white/5 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-black italic uppercase">Info <span class="text-thiago">Thiago</span></h1>
+            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Centro de ayuda y políticas</p>
+        </div>
+        <button onclick="window.location.href='producto.html'" class="text-white text-2xl"><i class="ph ph-x"></i></button>
+    </header>
+
+    <main class="p-5 space-y-4">
+
+        <section class="glass-card">
+            <div class="flex items-center gap-3 mb-3">
+                <i class="ph-fill ph-arrow-counter-clockwise text-thiago text-xl"></i>
+                <h3 class="text-xs font-black uppercase italic">Cambios y Devoluciones</h3>
+            </div>
+            <ul class="space-y-2 text-[10px] text-gray-400 font-medium">
+                <li class="flex gap-2"><i class="ph-bold ph-check text-thiago"></i> Productos perecibles se reclaman en la entrega.</li>
+                <li class="flex gap-2"><i class="ph-bold ph-check text-thiago"></i> Productos sellados: 24h para cambios.</li>
+                <li class="flex gap-2"><i class="ph-bold ph-check text-thiago"></i> Presentar boleta y empaque original.</li>
+            </ul>
+        </section>
+
+        <section class="glass-card border-l-4 border-thiago">
+            <div class="flex items-center gap-3 mb-3">
+                <i class="ph-fill ph-shield-check text-thiago text-xl"></i>
+                <h3 class="text-xs font-black uppercase italic">Garantía Frescura</h3>
+            </div>
+            <p class="text-[10px] text-gray-400 leading-relaxed">
+                Seleccionamos cada producto con cuidado. Si algo no llega perfecto, lo reponemos sin costo adicional.
+            </p>
+        </section>
+
+        <section class="glass-card">
+            <h3 class="text-[9px] font-black text-gray-500 uppercase mb-4 tracking-tighter text-center">Medios de Pago</h3>
+            <div class="grid grid-cols-4 gap-4 text-center">
+                <div class="flex flex-col items-center gap-1">
+                    <i class="ph-fill ph-qr-code text-2xl text-white"></i>
+                    <span class="text-[8px] font-bold">Yape/Plin</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <i class="ph-fill ph-credit-card text-2xl text-white"></i>
+                    <span class="text-[8px] font-bold">Tarjetas</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <i class="ph-fill ph-money text-2xl text-white"></i>
+                    <span class="text-[8px] font-bold">Efectivo</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <i class="ph-fill ph-bank text-2xl text-white"></i>
+                    <span class="text-[8px] font-bold">Transfer</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-2">
+            <details class="glass-card p-4 group">
+                <summary class="list-none flex justify-between items-center text-[10px] font-bold uppercase cursor-pointer">
+                    ¿Hacen envíos a provincia?
+                    <i class="ph ph-caret-down group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="text-[10px] text-gray-500 mt-3 pt-3 border-t border-white/5">Solo operamos localmente en Ica para garantizar calidad.</p>
+            </details>
+
+            <details class="glass-card p-4 group">
+                <summary class="list-none flex justify-between items-center text-[10px] font-bold uppercase cursor-pointer">
+                    ¿Los precios incluyen IGV?
+                    <i class="ph ph-caret-down group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="text-[10px] text-gray-500 mt-3 pt-3 border-t border-white/5">Sí, todos los precios ya incluyen impuestos.</p>
+            </details>
+        </section>
+
+    </main>
+
+    <a href="https://wa.me/51958845531" class="fixed bottom-24 right-5 bg-[#25D366] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-[600]">
+        <i class="ph-bold ph-whatsapp-logo text-white text-3xl"></i>
+    </a>
+
+    <nav class="nav-fixed">
+        <button onclick="window.location.href='producto.html'" class="nav-btn">
+            <i class="ph-fill ph-house text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='receta.html'" class="nav-btn">
+            <i class="ph-fill ph-cooking-pot text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='zonas.html'" class="nav-btn">
+            <i class="ph-fill ph-map-pin text-2xl"></i>
+        </button>
+        <button onclick="location.reload()" class="nav-btn active">
+            <i class="ph-fill ph-shield-checkered text-2xl"></i>
+        </button>
+    </nav>
+
+</body>
+</html>

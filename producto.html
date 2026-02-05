@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thiago Market | App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --verde: #88CF1E; }
+        body { 
+            background-color: #0d0d0d; 
+            color: white; 
+            font-family: sans-serif;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 25px 25px;
+            scroll-behavior: smooth;
+        }
+        .bg-thiago { background-color: var(--verde); }
+        .text-thiago { color: var(--verde); }
+        .grid-productos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        
+        .card-mini { background-color: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; border: 1px solid #eee; transition: all 0.3s; }
+        .card-mini.highlight { border: 4px solid var(--verde); transform: scale(1.05); z-index: 50; box-shadow: 0 0 20px var(--verde); }
+        .img-box { background-color: #f3f4f6; width: 100%; height: 110px; display: flex; align-items: center; justify-content: center; padding: 6px; position: relative; }
+        .product-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        #notification-box {
+            position: fixed; top: 20px; right: 20px; z-index: 2000;
+            transform: translateX(150%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #notification-box.show { transform: translateX(0); }
+        
+        .nav-fixed {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 999;
+            padding: 12px 16px;
+            display: flex; justify-content: space-around; align-items: center;
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #555; transition: 0.2s; background: none; border: none; }
+        .nav-btn.active { color: var(--verde); }
+    </style>
+</head>
+<body class="pb-32">
+
+    <div id="notification-box">
+        <div class="bg-white border-l-4 border-[#88CF1E] shadow-2xl p-4 rounded-lg flex items-center gap-3">
+            <i class="ph-bold ph-bell-ringing text-[#88CF1E] text-xl"></i>
+            <div>
+                <p class="text-black font-black text-[10px] uppercase leading-none">Thiago Market</p>
+                <p id="notif-text" class="text-gray-500 text-[9px] font-bold mt-1 uppercase"></p>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-thiago p-4 sticky top-0 z-[1000] shadow-md">
+        <div class="flex justify-between items-center mb-3">
+            <h1 class="text-white text-xl font-black italic uppercase">THIAGO MARKET</h1>
+            <div class="relative" onclick="toggleCart()">
+                <span id="cart-count" class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold italic">VER PEDIDO</span>
+            </div>
+        </div>
+        <div class="flex bg-white rounded-lg overflow-hidden border-2 border-black/5">
+            <input type="text" id="input-busqueda" onkeypress="if(event.key === 'Enter') buscarAhora()" placeholder="¿Qué buscas hoy?" class="w-full p-2.5 text-black text-sm outline-none">
+            <button onclick="buscarAhora()" class="bg-[#222] px-4"><i class="ph-bold ph-magnifying-glass text-white text-lg"></i></button>
+        </div>
+    </header>
+
+    <section class="relative h-[150px] flex items-center px-6 overflow-hidden bg-black/40 border-b border-white/5">
+        <div class="z-10">
+            <h2 class="text-2xl font-black italic uppercase text-white leading-none">Tu Súper <br> <span class="text-thiago">En Casa</span></h2>
+            <p class="text-[9px] text-gray-400 mt-2 uppercase font-bold tracking-widest">Fresco & Directo</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400" class="absolute right-[-20px] w-[180px] opacity-70 rotate-12">
+    </section>
+
+    <nav class="nav-fixed">
+        <button onclick="window.scrollTo(0,0)" class="nav-btn active">
+            <i class="ph-fill ph-house text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='receta.html'" class="nav-btn">
+            <i class="ph-fill ph-cooking-pot text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='zonas.html'" class="nav-btn">
+            <i class="ph-fill ph-map-pin text-2xl"></i>
+        </button>
+        <button onclick="window.location.href='informacion.html'" class="nav-btn">
+            <i class="ph-fill ph-shield-checkered text-2xl"></i>
+        </button>
+    </nav>
+
+    <div class="grid grid-cols-2 gap-3 px-4 mt-4">
+        <div class="border border-white/10 p-3 rounded-md bg-white/5 flex items-center gap-2">
+            <i class="ph ph-truck text-thiago text-2xl"></i>
+            <div><p class="text-[9px] font-black leading-none uppercase text-white">Envío Rápido</p><p class="text-[7px] text-gray-500 italic">Distrito de Ica</p></div>
+        </div>
+        <div class="border border-white/10 p-3 rounded-md bg-white/5 flex items-center gap-2">
+            <i class="ph ph-shield-check text-thiago text-2xl"></i>
+            <div><p class="text-[9px] font-black leading-none uppercase text-white">Seguridad</p><p class="text-[7px] text-gray-500 italic">Pago Garantizado</p></div>
+        </div>
+    </div>
+
+    <div class="bg-white p-3 mt-4 flex items-center justify-between border-b sticky top-[116px] z-[900]">
+        <span class="text-[10px] font-black text-gray-400 uppercase italic">Categoría:</span>
+        <select id="select-categoria" onchange="filtrarCategoria(this.value)" class="bg-gray-100 text-black text-[10px] font-bold py-1.5 px-4 rounded-full outline-none">
+            <option value="Todos">Ver Todo</option>
+         <option value="Abarrotes">🍎 Abarrotes, Frutas y Verduras</option>
+        <option value="Bebidas y Lácteos">🥛 Bebidas, Lácteos y Huevos</option>
+        <option value="Limpieza y Hogar">🧹 Limpieza y Hogar</option>
+        <option value="Librería y Oficina">📚 Librería, Útiles y Oficina</option>
+        <option value="Mascotas">🐶 Todo para Mascotas</option>
+        <option value="Moda y Calzado">👕 Ropa y Calzado</option>
+            <option value="Oferta">Ofertas Flash ⚡</option>
+        </select>
+    </div>
+
+    <div id="seccion-ofertas" class="mt-4 px-4">
+        <h2 class="text-xs font-black mb-3 text-thiago italic uppercase">⚡ Ofertas Flash</h2>
+        <div id="grid-ofertas" class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"></div>
+    </div>
+
+    <main id="grid-main" class="grid-productos mt-2"></main>
+
+    <footer class="mt-20 p-8 border-t border-white/5 bg-black/50 text-center">
+        <p class="text-[8px] text-gray-500 uppercase font-bold italic tracking-tighter">
+            Thiago System Management v4.7.0 PRO<br>
+            © 2026 Thiago Market
+        </p>
+    </footer>
+
+    <div id="cart-modal" class="fixed inset-0 z-[2000] hidden">
+        <div class="absolute inset-0 bg-black/90" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-[85%] bg-white text-black p-5 flex flex-col">
+            <h2 class="font-black border-b pb-4 mb-4 uppercase italic text-xl">Mi Pedido</h2>
+            <div id="cart-items" class="flex-1 overflow-y-auto space-y-3"></div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between font-black text-2xl mb-4 italic">
+                    <span class="text-xs text-gray-400 self-center uppercase">Total:</span>
+                    <span id="cart-total" class="text-thiago italic text-3xl">S/ 0.00</span>
+                </div>
+                <button onclick="enviarPedido()" class="w-full bg-thiago text-white py-4 font-black uppercase text-sm rounded-lg shadow-lg">Pedir por WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://yvyrbmlzlfrqatxwfemm.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2eXJibWx6bGZycWF0eHdmZW1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4ODU5NDMsImV4cCI6MjA4NDQ2MTk0M30.a3P3tvZPOLki21cmthcWMtHU5kXvjdqpflM7ws8wzOs';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let productosLocal = [];
+        let carritoLocal = [];
+
+        function notify(mensaje) {
+            const box = document.getElementById('notification-box');
+            document.getElementById('notif-text').innerText = mensaje;
+            box.classList.add('show');
+            setTimeout(() => { box.classList.remove('show'); }, 2000);
+        }
+
+        async function cargar() {
+            const { data } = await _supabase.from('productos').select('*');
+            productosLocal = data;
+            const ofertas = data.filter(p => p.categoria.toLowerCase().includes('oferta'));
+            document.getElementById('grid-ofertas').innerHTML = ofertas.map(p => `<div class="min-w-[150px]">${crearHTML(p)}</div>`).join('');
+            render(data);
+        }
+
+        function cambiarCantidad(id, delta) {
+            const input = document.getElementById(`qty-${id}`);
+            const displayPrecio = document.getElementById(`price-display-${id}`);
+            if(!input) return;
+            const precioBase = parseFloat(input.dataset.precio);
+            let nuevo = Math.max(0.25, parseFloat(input.value) + delta);
+            input.value = nuevo.toFixed(2);
+            displayPrecio.innerText = `S/ ${(precioBase * nuevo).toFixed(2)}`;
+        }
+
+        function crearHTML(p) {
+            return `
+                <div id="product-card-${p.id}" class="card-mini shadow-sm h-full">
+                    <div class="img-box">
+                        <img src="${p.imagen}" class="product-img">
+                        <span class="absolute top-2 left-2 bg-black text-white text-[7px] font-black px-1.5 py-0.5 rounded-full">S/ ${p.precio.toFixed(2)}/kg</span>
+                    </div>
+                    <div class="p-3 flex flex-col flex-1 bg-white text-black">
+                        <h3 class="text-[9px] font-black uppercase h-7 overflow-hidden leading-tight">${p.nombre}</h3>
+                        <div class="flex items-center justify-between bg-gray-100 rounded-lg p-1 mt-2 mb-1">
+                            <button onclick="cambiarCantidad(${p.id}, -0.25)" class="w-5 h-5 bg-white rounded font-bold text-thiago">-</button>
+                            <input id="qty-${p.id}" data-precio="${p.precio}" type="text" value="1.00" readonly class="bg-transparent text-[9px] font-bold text-center w-8">
+                            <button onclick="cambiarCantidad(${p.id}, 0.25)" class="w-5 h-5 bg-white rounded font-bold text-thiago">+</button>
+                        </div>
+                        <div id="price-display-${p.id}" class="text-center text-[9px] font-black text-gray-400 mb-2 italic">S/ ${p.precio.toFixed(2)}</div>
+                        <button onclick="agregar(${p.id})" class="mt-auto bg-black text-white py-2 text-[8px] font-black uppercase rounded-lg">Añadir</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function render(lista) {
+            document.getElementById('grid-main').innerHTML = lista.map(p => crearHTML(p)).join('');
+        }
+
+        function buscarAhora() {
+            const input = document.getElementById('input-busqueda');
+            const txt = input.value.toLowerCase().trim();
+            if(!txt) return;
+
+            // Buscamos en toda la lista local
+            const pEncontrado = productosLocal.find(p => p.nombre.toLowerCase().includes(txt));
+            
+            if(pEncontrado) {
+                // Si estamos en una categoría filtrada, regresamos a "Ver Todo" para que el producto exista en el DOM
+                document.getElementById('select-categoria').value = "Todos";
+                render(productosLocal);
+
+                // Esperamos un instante a que el DOM se actualice y hacemos scroll
+                setTimeout(() => {
+                    const el = document.getElementById(`product-card-${pEncontrado.id}`);
+                    if(el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.add('highlight');
+                        input.value = ""; // Limpiamos buscador
+                        setTimeout(() => el.classList.remove('highlight'), 3000);
+                    }
+                }, 100);
+            } else {
+                notify("No se encontró el producto");
+            }
+        }
+
+        function filtrarCategoria(cat) {
+            render(cat === 'Todos' ? productosLocal : productosLocal.filter(p => p.categoria.includes(cat)));
+        }
+
+        window.agregar = (id) => {
+            const p = productosLocal.find(x => x.id === id);
+            const cantidad = parseFloat(document.getElementById(`qty-${id}`).value);
+            carritoLocal.push({ ...p, precioCalculado: p.precio * cantidad, cantidadElegida: cantidad.toFixed(2) + ' Kg/Unid' });
+            document.getElementById('cart-count').innerText = carritoLocal.length + ' ITEMS';
+            actualizarCarrito();
+            notify(`${p.nombre} añadido`);
+        };
+
+        function actualizarCarrito() {
+            const total = carritoLocal.reduce((acc, p) => acc + p.precioCalculado, 0);
+            document.getElementById('cart-total').innerText = `S/ ${total.toFixed(2)}`;
+            document.getElementById('cart-items').innerHTML = carritoLocal.map((item, index) => `
+                <div class="flex justify-between items-center border-b pb-2 text-[10px]">
+                    <div><p class="font-black uppercase">${item.nombre}</p><p class="text-thiago font-bold">${item.cantidadElegida}</p></div>
+                    <div class="flex items-center gap-3"><span class="font-black italic text-black">S/ ${item.precioCalculado.toFixed(2)}</span><button onclick="eliminar(${index})" class="text-red-500"><i class="ph-bold ph-trash"></i></button></div>
+                </div>
+            `).join('');
+        }
+
+        window.eliminar = (index) => {
+            carritoLocal.splice(index, 1);
+            document.getElementById('cart-count').innerText = (carritoLocal.length || 'VER') + ' ITEMS';
+            actualizarCarrito();
+        };
+
+        window.toggleCart = () => document.getElementById('cart-modal').classList.toggle('hidden');
+
+        window.enviarPedido = () => {
+            if(carritoLocal.length === 0) return;
+            let msg = "*NUEVO PEDIDO - THIAGO MARKET*\n\n";
+            carritoLocal.forEach(i => msg += `✅ ${i.nombre} [${i.cantidadElegida}] - S/ ${i.precioCalculado.toFixed(2)}\n`);
+            msg += `\n*TOTAL: S/ ${carritoLocal.reduce((a,b)=>a+b.precioCalculado,0).toFixed(2)}*`;
+            window.open(`https://wa.me/51958845531?text=${encodeURIComponent(msg)}`);
+        };
+
+        document.addEventListener('DOMContentLoaded', cargar);
+    </script>
+</body>
+</html>
