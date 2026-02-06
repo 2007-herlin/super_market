@@ -108,12 +108,12 @@
         <span class="text-[10px] font-black text-gray-400 uppercase italic">Categoría:</span>
         <select id="select-categoria" onchange="filtrarCategoria(this.value)" class="bg-gray-100 text-black text-[10px] font-bold py-1.5 px-4 rounded-full outline-none">
             <option value="Todos">Ver Todo</option>
-            <option value="Abarrotes">🍎 Abarrotes, Frutas y Verduras</option>
-            <option value="Bebidas y Lácteos">🥛 Bebidas, Lácteos y Huevos</option>
-            <option value="Limpieza y Hogar">🧹 Limpieza y Hogar</option>
-            <option value="Librería y Oficina">📚 Librería, Útiles y Oficina</option>
-            <option value="Mascotas">🐶 Todo para Mascotas</option>
-            <option value="Moda y Calzado">👕 Ropa y Calzado</option>
+         <option value="Abarrotes">🍎 Abarrotes, Frutas y Verduras</option>
+        <option value="Bebidas y Lácteos">🥛 Bebidas, Lácteos y Huevos</option>
+        <option value="Limpieza y Hogar">🧹 Limpieza y Hogar</option>
+        <option value="Librería y Oficina">📚 Librería, Útiles y Oficina</option>
+        <option value="Mascotas">🐶 Todo para Mascotas</option>
+        <option value="Moda y Calzado">👕 Ropa y Calzado</option>
             <option value="Oferta">Ofertas Flash ⚡</option>
         </select>
     </div>
@@ -137,13 +137,7 @@
         <div class="absolute right-0 top-0 bottom-0 w-[85%] bg-white text-black p-5 flex flex-col">
             <h2 class="font-black border-b pb-4 mb-4 uppercase italic text-xl">Mi Pedido</h2>
             <div id="cart-items" class="flex-1 overflow-y-auto space-y-3"></div>
-            
-            <div class="mt-4 border-t pt-4">
-                <label class="text-[10px] font-black uppercase text-gray-400">Nombre del Cliente:</label>
-                <input type="text" id="cliente-nombre" placeholder="¿A quién entregamos?" class="w-full border-2 border-gray-100 p-3 rounded-lg text-sm mt-1 outline-none focus:border-thiago transition-all">
-            </div>
-
-            <div class="border-t mt-4 pt-4">
+            <div class="border-t pt-4">
                 <div class="flex justify-between font-black text-2xl mb-4 italic">
                     <span class="text-xs text-gray-400 self-center uppercase">Total:</span>
                     <span id="cart-total" class="text-thiago italic text-3xl">S/ 0.00</span>
@@ -161,31 +155,14 @@
         let productosLocal = [];
         let carritoLocal = [];
 
-        // --- SISTEMA DE NOTIFICACIONES REALES ---
         function notify(mensaje) {
-            // 1. Notificación Visual en pantalla (La que ya tenías)
             const box = document.getElementById('notification-box');
             document.getElementById('notif-text').innerText = mensaje;
             box.classList.add('show');
-            setTimeout(() => { box.classList.remove('show'); }, 3000);
-
-            // 2. Notificación Real de Sistema (Barra de estado)
-            if ("Notification" in window) {
-                if (Notification.permission === "granted") {
-                    new Notification("THIAGO MARKET", {
-                        body: mensaje,
-                        icon: "https://unpkg.com/@phosphor-icons/core/assets/fill/shopping-cart-fill.svg"
-                    });
-                } else if (Notification.permission !== "denied") {
-                    Notification.requestPermission();
-                }
-            }
+            setTimeout(() => { box.classList.remove('show'); }, 2000);
         }
 
         async function cargar() {
-            // Pedir permiso de notificaciones al cargar la app
-            if ("Notification" in window) { Notification.requestPermission(); }
-            
             const { data } = await _supabase.from('productos').select('*');
             productosLocal = data;
             const ofertas = data.filter(p => p.categoria.toLowerCase().includes('oferta'));
@@ -232,16 +209,22 @@
             const input = document.getElementById('input-busqueda');
             const txt = input.value.toLowerCase().trim();
             if(!txt) return;
+
+            // Buscamos en toda la lista local
             const pEncontrado = productosLocal.find(p => p.nombre.toLowerCase().includes(txt));
+            
             if(pEncontrado) {
+                // Si estamos en una categoría filtrada, regresamos a "Ver Todo" para que el producto exista en el DOM
                 document.getElementById('select-categoria').value = "Todos";
                 render(productosLocal);
+
+                // Esperamos un instante a que el DOM se actualice y hacemos scroll
                 setTimeout(() => {
                     const el = document.getElementById(`product-card-${pEncontrado.id}`);
                     if(el) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.classList.add('highlight');
-                        input.value = "";
+                        input.value = ""; // Limpiamos buscador
                         setTimeout(() => el.classList.remove('highlight'), 3000);
                     }
                 }, 100);
@@ -260,7 +243,7 @@
             carritoLocal.push({ ...p, precioCalculado: p.precio * cantidad, cantidadElegida: cantidad.toFixed(2) + ' Kg/Unid' });
             document.getElementById('cart-count').innerText = carritoLocal.length + ' ITEMS';
             actualizarCarrito();
-            notify(`${p.nombre} añadido al pedido`);
+            notify(`${p.nombre} añadido`);
         };
 
         function actualizarCarrito() {
@@ -283,29 +266,15 @@
         window.toggleCart = () => document.getElementById('cart-modal').classList.toggle('hidden');
 
         window.enviarPedido = () => {
-            const nombreCliente = document.getElementById('cliente-nombre').value.trim();
             if(carritoLocal.length === 0) return;
-            if(!nombreCliente) return alert("Por favor, ingresa tu nombre");
-
-            const totalCalculado = carritoLocal.reduce((a, b) => a + b.precioCalculado, 0).toFixed(2);
-
-            // Notificación de sistema al confirmar
-            notify(`Enviando pedido de ${nombreCliente}...`);
-
-            let msg = `*NUEVO PEDIDO - THIAGO MARKET*\n`; 
-            msg += `CLIENTE: ${nombreCliente.toUpperCase()}\n\n`;
-            msg += `PRODUCTOS:\n`;
-            carritoLocal.forEach(item => {
-                msg += `- ${item.cantidadElegida.split(' ')[0]} de ${item.nombre}\n`;
-            });
-            msg += `\nTOTAL A PAGAR: S/ ${totalCalculado}\n`;
-            msg += `Vaya preparando el pedido jefe.`;
-
-            const urlWhatsApp = `https://wa.me/51958845531?text=${encodeURIComponent(msg)}`;
-            window.open(urlWhatsApp, '_blank');
+            let msg = "*NUEVO PEDIDO - THIAGO MARKET*\n\n";
+            carritoLocal.forEach(i => msg += `✅ ${i.nombre} [${i.cantidadElegida}] - S/ ${i.precioCalculado.toFixed(2)}\n`);
+            msg += `\n*TOTAL: S/ ${carritoLocal.reduce((a,b)=>a+b.precioCalculado,0).toFixed(2)}*`;
+            window.open(`https://wa.me/51958845531?text=${encodeURIComponent(msg)}`);
         };
 
         document.addEventListener('DOMContentLoaded', cargar);
     </script>
 </body>
+
 </html>
